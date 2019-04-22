@@ -1,9 +1,4 @@
-.current-location, .star-black {
-  width: 20px;
-  height: 20px;
-}
-
-.row {
+.location-selection {
   display: table;
   width: 100%;
   table-layout: fixed;
@@ -12,5 +7,14 @@
     display: table-cell;
     border: 1px solid black;
     cursor: pointer;
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+
+    span {
+      margin-bottom: 5px;
+    }
   }
 }

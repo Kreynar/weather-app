@@ -12,15 +12,15 @@ export default class Map extends Component {
 
   render() {
     return (
-      <div className="row">
+      <div className="location-selection">
         <div onClick={this.props.onDeviceLocationSelect}
              className="column">
-          <img src={deviceLocationPath} className="current-location" alt=""/>
-          Current
+          <img src={deviceLocationPath} alt=""/>
+          <span>Current</span>
         </div>
         <div onClick={this.props.onFavoriteCitySelect}
              className="column">
-          <img src={starBlackPath} className="star-black" alt=""/>
+          <img src={starBlackPath} alt=""/>
           Favorites
         </div>
       </div>

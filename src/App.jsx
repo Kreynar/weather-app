@@ -52,20 +52,12 @@ class App extends Component {
   onMarkAsFavoriteClick = () => {
     this.setState(state => {
       const { favoriteCities } = state;
-      const city = state.weatherData.name;
-      let newFavoriteCities = []
-      if (favoriteCities.includes(city)) {
-        newFavoriteCities = this.getCitiesWithoutFavorite(favoriteCities, city);
-      } else {
-        newFavoriteCities = [...favoriteCities, city];
-      }
-      return { ...state, favoriteCities: newFavoriteCities};
-    }, () => console.log(this.state));
-  }
-
-  getCitiesWithoutFavorite = (cities, city) => {
-    const indexOfCity = cities.indexOf(city);
-    return cities.slice(0, indexOfCity).concat(cities.slice(indexOfCity + 1));
+      const cityToBeAddedOrRemoved = state.weatherData.name;
+      const newFavoriteCities = favoriteCities.includes(cityToBeAddedOrRemoved) 
+        ? favoriteCities.filter(city => city !== cityToBeAddedOrRemoved)
+        : [...favoriteCities, cityToBeAddedOrRemoved];
+      return { favoriteCities: newFavoriteCities };
+    });
   }
 
   render() {

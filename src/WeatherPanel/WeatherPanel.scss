@@ -1,9 +1,49 @@
 .weather-panel {
-  height: 200px
-}
+  height: 200px;
+  position: relative;
 
-.star-black {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
+  h1 {
+    position: relative;
+    margin-bottom: 0;
+
+    img {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  }
+
+  img {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    top: -20px;
+  }
+
+  h2 {
+    margin: 0;
+    position: relative;
+    top: -50px;
+  }
+
+  .weather-info {
+    position: relative;
+    top: -50px;
+    margin: 0 20px;
+    display: table;
+    table-layout: fixed;
+
+    .column {
+      text-align: left;
+      display: table-cell;
+
+      .row {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+      }
+    }
+  }
 }
