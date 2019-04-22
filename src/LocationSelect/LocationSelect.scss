@@ -7,14 +7,20 @@
     display: table-cell;
     border: 1px solid black;
     cursor: pointer;
+    position: relative;
 
     img {
       width: 20px;
       height: 20px;
     }
 
-    span {
-      margin-bottom: 5px;
+    select {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
     }
   }
 }

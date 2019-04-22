@@ -19,6 +19,10 @@ class App extends Component {
 
   componentDidMount() {
     this.fetchWeatherInDeviceLocation();
+    this.setState({
+      favoriteCities: Object.values(localStorage)
+        .map(cityStringified => JSON.parse(cityStringified))
+    })
   }
 
   fetchWeatherInDeviceLocation = () => {
@@ -41,34 +45,41 @@ class App extends Component {
     this.mapRef.current.focusDeviceLocationAndSetMarkers()
   }
 
-  onFavoriteCitySelect = () => {
-
-  }
-
-  onLocationInputSubmit = () => {
-
+  onFavoriteCitySelect = latLng => {
+    this.fetchWeatherInSelectedLocation(latLng);
+    this.mapRef.current.focusLocationAndSetMarkers(null, latLng)
   }
 
   onMarkAsFavoriteClick = () => {
     this.setState(state => {
       const { favoriteCities } = state;
-      const cityToBeAddedOrRemoved = state.weatherData.name;
-      const newFavoriteCities = favoriteCities.includes(cityToBeAddedOrRemoved) 
-        ? favoriteCities.filter(city => city !== cityToBeAddedOrRemoved)
+      const cityToBeAddedOrRemoved = {
+        name: state.weatherData.name,
+        latLng: {
+          lat: state.weatherData.coord.lat,
+          lng: state.weatherData.coord.lon
+        } 
+      }
+      const isCityInFavorites = favoriteCities.some(city => city.name === cityToBeAddedOrRemoved.name);
+      const newFavoriteCities =  isCityInFavorites
+        ? favoriteCities.filter(city => city.name !== cityToBeAddedOrRemoved.name)
         : [...favoriteCities, cityToBeAddedOrRemoved];
+      isCityInFavorites 
+        ? localStorage.removeItem(cityToBeAddedOrRemoved.name)
+        : localStorage.setItem(cityToBeAddedOrRemoved.name, JSON.stringify(cityToBeAddedOrRemoved));
       return { favoriteCities: newFavoriteCities };
     });
   }
 
   render() {
-    let isSelectedCityFavorite = this.state.weatherData 
-      ? this.state.favoriteCities.includes(this.state.weatherData.name)
+    const isSelectedCityFavorite = this.state.weatherData 
+      ? this.state.favoriteCities.some(city => city.name === this.state.weatherData.name)
       : false;
     return (
       <div className="App">
         <LocationSelect onDeviceLocationSelect={this.onDeviceLocationSelect}
                         onFavoriteCitySelect={this.onFavoriteCitySelect}
-                        onLocationInputSubmit={this.onLocationInputSubmit}/>
+                        favoriteCities={this.state.favoriteCities}/>
         {this.state.loaded 
           ? 
           <WeatherPanel onMarkAsFavoriteClick={this.onMarkAsFavoriteClick} 
@@ -77,7 +88,9 @@ class App extends Component {
           :
           <img src={loadingGifPath} className="loading" alt="Loading..."/>
         }
-        <Map ref={this.mapRef} onMarkerClick={this.fetchWeatherInSelectedLocation}/>
+        <Map ref={this.mapRef} 
+             onMarkerClick={this.fetchWeatherInSelectedLocation}
+             onMapLocationFocus={this.fetchWeatherInSelectedLocation}/>
       </div>
     );
   }

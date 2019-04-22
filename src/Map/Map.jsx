@@ -43,9 +43,11 @@ export default class Map extends Component {
   focusLocationAndSetMarkers = (locationName, locationLatLng) => {
     this.geocoder.geocode({ address: locationName, location: locationLatLng }, (results, status) => {
       if (status === this.googleMaps.GeocoderStatus.OK) { 
-        this.map.setCenter(results[0].geometry.location);
-        this.map.fitBounds(results[0].geometry.viewport);
+        const { geometry } = results[0];
+        this.map.setCenter(geometry.location);
+        this.map.fitBounds(geometry.viewport);
         this.map.getZoom() > 8 ? this.map.setZoom(8) : this.map.setZoom(this.map.getZoom() + 1);
+        this.props.onMapLocationFocus({ lat: geometry.location.lat(), lng: geometry.location.lng()});
         this.fetchCitiesWeatherInFocusedLocation()
           .then(citiesWeatherData => this.setMarkers(citiesWeatherData));
       }
@@ -59,8 +61,7 @@ export default class Map extends Component {
     const east = this.map.getBounds().getNorthEast().lng();
     const north = this.map.getBounds().getNorthEast().lat();   
     return fetch(`https://api.openweathermap.org/data/2.5/box/city?units=metric&bbox=${west},${south},${east},${north},${zoom}&appid=${OPEN_WEATHER_MAP_API_KEY}`)
-      .then(response => response.json())
-      .then(data => { console.log(data); return data});
+      .then(response => response.json());
   }
 
   setMarkers = citiesWeatherData => {
@@ -85,18 +86,19 @@ export default class Map extends Component {
 
   render() {
     return (
-      <div>
-        <label htmlFor="location">Search for weather in location: </label>
-        <input onKeyUp={event => event.key === 'Enter' 
-                          ? this.focusLocationAndSetMarkers(this.locationInputRef.current.value) 
-                          : null}
-          ref={this.locationInputRef}
-          id="location" 
-          type="text" 
-          placeholder="Country / city"/>
-        <button onClick={() => this.focusLocationAndSetMarkers(this.locationInputRef.current.value)}>
-          Search
-        </button>
+      <div className="map-panel">
+        <div className="search">
+          <input onKeyUp={event => event.key === 'Enter' 
+                            ? this.focusLocationAndSetMarkers(this.locationInputRef.current.value) 
+                            : null}
+            ref={this.locationInputRef}
+            id="location" 
+            type="text" 
+            placeholder="Search for country / city"/>
+          <button onClick={() => this.focusLocationAndSetMarkers(this.locationInputRef.current.value)}>
+            Search
+          </button>
+        </div>
         <div id="map"></div>
       </div>
     );

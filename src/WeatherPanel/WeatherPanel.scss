@@ -1,28 +1,30 @@
 .weather-panel {
   height: 200px;
+  width: 310px;
+  margin: auto;
   position: relative;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 5px 0 rgba(0, 0, 0, 0.1);
 
-  h1 {
+  h2 {
     position: relative;
-    margin-bottom: 0;
+    margin: 5px 0 0 0;
 
     img {
-      position: relative;
-      width: 20px;
-      height: 20px;
+      // width: 20px;
+      height: 0.8em;
       cursor: pointer;
       margin-left: 10px;
     }
   }
 
-  img {
+  .weather-icon {
     width: 80px;
     height: 80px;
     position: relative;
     top: -20px;
   }
 
-  h2 {
+  h3 {
     margin: 0;
     position: relative;
     top: -50px;
@@ -31,19 +33,14 @@
   .weather-info {
     position: relative;
     top: -50px;
-    margin: 0 20px;
-    display: table;
-    table-layout: fixed;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    width: 300px;
 
     .column {
+      margin: 0 10px;
       text-align: left;
-      display: table-cell;
-
-      .row {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-      }
     }
   }
 }

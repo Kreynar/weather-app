@@ -1,6 +1,21 @@
+.map-panel {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column; 
+  height: 40%;
+  
+  .search {
+    margin: 10px auto;
+  }
+}
+
 #map {
-  width: 70%;
-  height: 50%;
-  min-width: 300px;
   min-height: 200px;
+  height: 100%;
+}
+
+@media only screen and (min-width: 768px) {
+  .map-panel {
+    height: 60%;
+  }
 }
