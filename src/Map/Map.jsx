@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import $script from 'scriptjs';
 import './Map.scss';
+import { OPEN_WEATHER_MAP_API_KEY, GOOGLE_MAPS_API_KEY } from '../apiKeys.const';
 
 export default class Map extends Component {
   constructor(props) {
@@ -9,7 +10,7 @@ export default class Map extends Component {
   }
 
   componentDidMount() {
-    $script('https://maps.googleapis.com/maps/api/js?key=AIzaSyA86jpzAWU9lNSFrSaHqZr08soFyQCXeZA', () => {
+    $script(`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}`, () => {
       this.googleMaps = window.google.maps;
       this.map = new this.googleMaps.Map(document.getElementById('map'), {
         center: {lat: 55.169, lng: 23.881},
@@ -18,7 +19,7 @@ export default class Map extends Component {
       this.geocoder = new this.googleMaps.Geocoder();
       this.map.addListener('center_changed', () => this.fetchWeatherAndSetMarkersWithTimeout());
       this.map.addListener('zoom_changed', () => this.fetchWeatherAndSetMarkersWithTimeout());
-      this.focusDeviceLocationAndSetMarkersWithTemperature();
+      this.focusDeviceLocationAndSetMarkers();
     })
   }
 
@@ -26,27 +27,27 @@ export default class Map extends Component {
     clearTimeout(this.timeoutId);
     this.timeoutId = setTimeout(() => {
       this.fetchCitiesWeatherInFocusedLocation()
-        .then(citiesWeatherData => this.setMarkersWithTemperature(citiesWeatherData));
+        .then(citiesWeatherData => this.setMarkers(citiesWeatherData));
     }, 500)
   }
 
-  focusDeviceLocationAndSetMarkersWithTemperature = () => {
+  focusDeviceLocationAndSetMarkers = () => {
     navigator.geolocation.getCurrentPosition(position => {
-      this.focusLocationAndSetMarkersWithTemperature(null, { 
+      this.focusLocationAndSetMarkers(null, { 
         lat: position.coords.latitude, 
         lng: position.coords.longitude
       })
     });
   }
 
-  focusLocationAndSetMarkersWithTemperature = (locationName, locationLatLng) => {
+  focusLocationAndSetMarkers = (locationName, locationLatLng) => {
     this.geocoder.geocode({ address: locationName, location: locationLatLng }, (results, status) => {
       if (status === this.googleMaps.GeocoderStatus.OK) { 
         this.map.setCenter(results[0].geometry.location);
         this.map.fitBounds(results[0].geometry.viewport);
         this.map.getZoom() > 8 ? this.map.setZoom(8) : this.map.setZoom(this.map.getZoom() + 1);
         this.fetchCitiesWeatherInFocusedLocation()
-          .then(citiesWeatherData => this.setMarkersWithTemperature(citiesWeatherData));
+          .then(citiesWeatherData => this.setMarkers(citiesWeatherData));
       }
     });
   }
@@ -57,15 +58,16 @@ export default class Map extends Component {
     const south = this.map.getBounds().getSouthWest().lat();   
     const east = this.map.getBounds().getNorthEast().lng();
     const north = this.map.getBounds().getNorthEast().lat();   
-    return fetch(`https://api.openweathermap.org/data/2.5/box/city?bbox=${west},${south},${east},${north},${zoom}&appid=98c355d73f22c6eb33c4bc0bd22031fe`)
-      .then(response => response.json());
+    return fetch(`https://api.openweathermap.org/data/2.5/box/city?units=metric&bbox=${west},${south},${east},${north},${zoom}&appid=${OPEN_WEATHER_MAP_API_KEY}`)
+      .then(response => response.json())
+      .then(data => { console.log(data); return data});
   }
 
-  setMarkersWithTemperature = citiesWeatherData => {
+  setMarkers = citiesWeatherData => {
     if (this.markers && this.markers.length) this.markers.forEach(marker => marker.setMap(null));
     try {
       this.markers = citiesWeatherData.list.map(cityWeatherData => {
-        return new this.googleMaps.Marker({
+        const marker = new this.googleMaps.Marker({
           position: {
             lat: cityWeatherData.coord.Lat,
             lng: cityWeatherData.coord.Lon
@@ -73,6 +75,10 @@ export default class Map extends Component {
           label: Math.round(cityWeatherData.main.temp) + '',
           map: this.map
         });
+        this.googleMaps.event.addListener(marker, 'click', () => {
+          this.props.onMarkerClick({ lat: marker.position.lat(), lng: marker.position.lng() });
+        });
+        return marker;
       });
     } catch(err) {}
   }
@@ -82,13 +88,13 @@ export default class Map extends Component {
       <div>
         <label htmlFor="location">Search for weather in location: </label>
         <input onKeyUp={event => event.key === 'Enter' 
-                          ? this.focusLocationAndSetMarkersWithTemperature(this.locationInputRef.current.value) 
+                          ? this.focusLocationAndSetMarkers(this.locationInputRef.current.value) 
                           : null}
           ref={this.locationInputRef}
           id="location" 
           type="text" 
           placeholder="Country / city"/>
-        <button onClick={() => this.focusLocationAndSetMarkersWithTemperature(this.locationInputRef.current.value)}>
+        <button onClick={() => this.focusLocationAndSetMarkers(this.locationInputRef.current.value)}>
           Search
         </button>
         <div id="map"></div>

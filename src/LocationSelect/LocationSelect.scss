@@ -1,0 +1,16 @@
+.current-location, .star-black {
+  width: 20px;
+  height: 20px;
+}
+
+.row {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+
+  .column {
+    display: table-cell;
+    border: 1px solid black;
+    cursor: pointer;
+  }
+}
