@@ -3,6 +3,7 @@
 Orų puslapis
 
 Užduotis​: sukurti SPA pagal žemiau pateiktus funkcinius ir techninius reikalavimus.
+
 Funkciniai reikalavimai:
 1. Realizuoti kategorizavimą pagal šalies pavadinimą.
 2. Realizuoti paiešką pagal miesto pavadinimą.
@@ -10,6 +11,7 @@ Funkciniai reikalavimai:
 4. Atvaizduoti orus ne tik sąraše, bet ir žemėlapyje (Google maps).
 5. Prisiminti pamėgtus miestus (Cookies, Local Storage).
 6. Duomenis gauti iš nemokamo orų API.
+
 Techniniai reikalavimai:
 1. Naudoti CSS preprocesorių (SASS, Stylus, Less).
 2. Taikyti „Mobile first“ metodiką. Nenaudoti Bootstrap, Foundation ar kt. Grid‘ui naudoti Neat,
@@ -22,6 +24,7 @@ naršyklėse (IE9+).
 7. Išeities kodas turi būti taisyklingas ir optimizuotas (vienas .js ir .css, minifikuoti).
 8. Kodas turi būti patalpintas GitHub‘e arba atsiųstas zip‘as. Viduje turi būti README dokumentas,
 kuriame aprašyta kaip paleisti svetainę.
+
 Tikslai:
 1. Įvertinti kandidato gebėjimą rašyti aiškų ir tvarkingą kodą, kurį vėliau būtų galima lengvai
 papildyti nauju funkcionalumu.
